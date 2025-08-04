@@ -1,0 +1,45 @@
+artifact_path: model
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.7
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.1
+mlflow_version: 2.19.0
+model_size_bytes: 3946
+model_uuid: fa64327e064b45acb24902631e4bb5fa
+run_id: 8c6b805c9d4b4efca838d4bb1318c46a
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "long", "name": "cap-shape", "required": true}, {"type": "long",
+    "name": "cap-surface", "required": true}, {"type": "long", "name": "cap-color",
+    "required": true}, {"type": "long", "name": "bruises", "required": true}, {"type":
+    "long", "name": "odor", "required": true}, {"type": "long", "name": "gill-attachment",
+    "required": true}, {"type": "long", "name": "gill-spacing", "required": true},
+    {"type": "long", "name": "gill-size", "required": true}, {"type": "long", "name":
+    "gill-color", "required": true}, {"type": "long", "name": "stalk-shape", "required":
+    true}, {"type": "long", "name": "stalk-root", "required": true}, {"type": "long",
+    "name": "stalk-surface-above-ring", "required": true}, {"type": "long", "name":
+    "stalk-surface-below-ring", "required": true}, {"type": "long", "name": "stalk-color-above-ring",
+    "required": true}, {"type": "long", "name": "stalk-color-below-ring", "required":
+    true}, {"type": "long", "name": "veil-type", "required": true}, {"type": "long",
+    "name": "veil-color", "required": true}, {"type": "long", "name": "ring-number",
+    "required": true}, {"type": "long", "name": "ring-type", "required": true}, {"type":
+    "long", "name": "spore-print-color", "required": true}, {"type": "long", "name":
+    "population", "required": true}, {"type": "long", "name": "habitat", "required":
+    true}]'
+  outputs: '[{"type": "long", "required": true}]'
+  params: null
+utc_time_created: '2025-08-04 08:15:07.065250'

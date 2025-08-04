@@ -1,0 +1,15 @@
+artifact_uri: file:///home/runner/work/Workflow-CI/Workflow-CI/MLProject/mlruns/269294399465252758/8c6b805c9d4b4efca838d4bb1318c46a/artifacts
+end_time: 1754295309926
+entry_point_name: ''
+experiment_id: '269294399465252758'
+lifecycle_stage: active
+run_id: 8c6b805c9d4b4efca838d4bb1318c46a
+run_name: resilient-bear-738
+run_uuid: 8c6b805c9d4b4efca838d4bb1318c46a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1754295264463
+status: 3
+tags: []
+user_id: runner

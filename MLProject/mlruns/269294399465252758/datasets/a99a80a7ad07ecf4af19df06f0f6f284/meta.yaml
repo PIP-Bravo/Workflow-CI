@@ -1,0 +1,23 @@
+digest: d27272d9
+name: dataset
+profile: '{"num_rows": 5, "num_elements": 110}'
+schema: '{"mlflow_colspec": [{"type": "long", "name": "cap-shape", "required": true},
+  {"type": "long", "name": "cap-surface", "required": true}, {"type": "long", "name":
+  "cap-color", "required": true}, {"type": "long", "name": "bruises", "required":
+  true}, {"type": "long", "name": "odor", "required": true}, {"type": "long", "name":
+  "gill-attachment", "required": true}, {"type": "long", "name": "gill-spacing", "required":
+  true}, {"type": "long", "name": "gill-size", "required": true}, {"type": "long",
+  "name": "gill-color", "required": true}, {"type": "long", "name": "stalk-shape",
+  "required": true}, {"type": "long", "name": "stalk-root", "required": true}, {"type":
+  "long", "name": "stalk-surface-above-ring", "required": true}, {"type": "long",
+  "name": "stalk-surface-below-ring", "required": true}, {"type": "long", "name":
+  "stalk-color-above-ring", "required": true}, {"type": "long", "name": "stalk-color-below-ring",
+  "required": true}, {"type": "long", "name": "veil-type", "required": true}, {"type":
+  "long", "name": "veil-color", "required": true}, {"type": "long", "name": "ring-number",
+  "required": true}, {"type": "long", "name": "ring-type", "required": true}, {"type":
+  "long", "name": "spore-print-color", "required": true}, {"type": "long", "name":
+  "population", "required": true}, {"type": "long", "name": "habitat", "required":
+  true}]}'
+source: '{"tags": {"mlflow.user": "runner", "mlflow.source.name": "modelling.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "7f31dd747314f74b8b8c219b1bfdaf34cbad6fe3"}}'
+source_type: code

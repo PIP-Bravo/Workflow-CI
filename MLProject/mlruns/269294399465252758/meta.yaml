@@ -1,0 +1,6 @@
+artifact_location: file:///home/runner/work/Workflow-CI/Workflow-CI/MLProject/mlruns/269294399465252758
+creation_time: 1754295264427
+experiment_id: '269294399465252758'
+last_update_time: 1754295264427
+lifecycle_stage: active
+name: mushroom-logreg-classifier
