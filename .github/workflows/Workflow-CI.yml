@@ -55,7 +55,7 @@ jobs:
         pip install mlflow
 
     - name: Upload artifact ke GitHub repository
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
         path: mlruns/
