@@ -49,10 +49,6 @@ jobs:
         latest_run=$(ls -td MLProject/mlruns/0/* | head -n 1 | xargs -n 1 basename)
         echo "run_id=$latest_run" >> $GITHUB_OUTPUT
 
-    - name: Install Python dependencies (again, inside shell)
-      run: |
-        pip install mlflow
-
     - name: Upload artifact ke GitHub repository
       uses: actions/upload-artifact@v4
       with:
