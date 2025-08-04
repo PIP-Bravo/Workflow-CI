@@ -46,10 +46,12 @@ jobs:
     - name: Get latest MLflow experiment ID and run_id
       id: get-run-id
       run: |
-        exp_id=$(mlflow experiments list | grep "${{ env.MLFLOW_EXPERIMENT_NAME }}" | awk '{print $1}')
+        # Ambil experiment_id dari folder
+        exp_id=$(find MLProject/mlruns/ -mindepth 1 -maxdepth 1 -type d -printf "%T@ %f\n" | sort -nr | head -n 1 | cut -d' ' -f2)
         echo "Experiment ID: $exp_id"
     
-        run_id=$(find MLProject/mlruns/$exp_id/* -maxdepth 0 -type d | sort -r | head -n 1 | xargs -n 1 basename)
+        # Ambil run_id terbaru
+        run_id=$(find MLProject/mlruns/$exp_id -mindepth 1 -maxdepth 1 -type d -printf "%T@ %f\n" | sort -nr | head -n 1 | cut -d' ' -f2)
         echo "Run ID: $run_id"
     
         echo "experiment_id=$exp_id" >> $GITHUB_OUTPUT
