@@ -46,10 +46,10 @@ jobs:
     - name: Get latest MLflow run_id
       id: get-run-id
       run: |
-        echo "Isi dari MLProject/mlruns/0:"
+        echo "Isi dari MLProject/mlruns:"
         ls -la MLProject/mlruns/0 || echo "Direktori belum ada atau kosong"
     
-        latest_run=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | sort -r | head -n 1)
+        latest_run=$(find MLProject/mlruns/*/* -maxdepth 0 -type d | sort -r | head -n 1 | xargs -n 1 basename)
         
         if [ -z "$latest_run" ]; then
           echo "Tidak ditemukan direktori run ID!"
