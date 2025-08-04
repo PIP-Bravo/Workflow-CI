@@ -46,12 +46,14 @@ jobs:
     - name: Get latest MLflow experiment ID and run_id
       id: get-run-id
       run: |
-        # Ambil experiment_id dari folder
+        # Ambil experiment_id berdasarkan folder terakhir dimodifikasi
         exp_id=$(find MLProject/mlruns/ -mindepth 1 -maxdepth 1 -type d -printf "%T@ %f\n" | sort -nr | head -n 1 | cut -d' ' -f2)
         echo "Experiment ID: $exp_id"
     
-        # Ambil run_id terbaru
-        run_id=$(find MLProject/mlruns/$exp_id -mindepth 1 -maxdepth 1 -type d -printf "%T@ %f\n" | sort -nr | head -n 1 | cut -d' ' -f2)
+        # Ambil run_id terakhir, hanya folder dengan nama 32 karakter heksadesimal
+        run_id=$(find MLProject/mlruns/$exp_id -mindepth 1 -maxdepth 1 -type d -printf "%T@ %f\n" \
+          | grep -E '\s[0-9a-f]{32}$' \
+          | sort -nr | head -n 1 | cut -d' ' -f2)
         echo "Run ID: $run_id"
     
         echo "experiment_id=$exp_id" >> $GITHUB_OUTPUT
