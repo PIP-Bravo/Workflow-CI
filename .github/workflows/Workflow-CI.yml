@@ -39,9 +39,15 @@ jobs:
         python-version: 3.12.7
         auto-activate-base: false
 
+    
     - name: Run MLflow project
       working-directory: MLProject
       run: |
+        if [ -f MLProject/mlruns ]; then
+          echo "Detected MLProject/mlruns as a file. Removing it..."
+          rm MLProject/mlruns
+        fi
+        mkdir -p MLProject/mlruns
         conda run -n mlflow-env mlflow run . --env-manager=conda
 
     - name: Get latest MLflow run_id
