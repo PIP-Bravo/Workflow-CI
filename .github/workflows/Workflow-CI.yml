@@ -5,6 +5,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  
 jobs:
   run-and-model:
     runs-on: ubuntu-latest
@@ -59,15 +62,20 @@ jobs:
         echo "experiment_id=$exp_id" >> $GITHUB_OUTPUT
         echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
-    - name: Install Python dependencies (again, inside shell)
+    - name: Install Python dependencies
       run: |
-        pip install mlflow
+        pip install mlflow==2.19.0
 
     - name: Upload artifact ke GitHub repository
-      uses: actions/upload-artifact@v4
-      with:
-        name: trained-model-artifacts
-        path: MLProject/mlruns/
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        git add MLProject/mlruns/
+        git commit -m "Add latest MLflow artifacts from run ${{ steps.get-run-id.outputs.run_id }}" || echo "No changes to commit"
+        git push origin HEAD:${{ github.ref_name }}
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker Model
       run: |
