@@ -42,7 +42,7 @@ jobs:
     - name: Run MLflow project
       working-directory: MLProject
       run: |
-        mlflow run . --env-manager=conda
+        conda run -n mlflow-env mlflow run . --env-manager=conda
 
     - name: Get latest MLflow run_id
       id: get-run-id
