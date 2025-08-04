@@ -43,21 +43,16 @@ jobs:
       run: |
         conda run -n mlflow-env mlflow run MLProject --env-manager=conda
 
-    - name: Get latest MLflow run_id
+    - name: Get latest MLflow experiment ID and run_id
       id: get-run-id
       run: |
-        echo "Isi dari MLProject/mlruns:"
-        ls -la MLProject/mlruns/0 || echo "Direktori belum ada atau kosong"
+        exp_id=$(mlflow experiments list | grep "${{ env.MLFLOW_EXPERIMENT_NAME }}" | awk '{print $1}')
+        echo "Experiment ID: $exp_id"
     
-        latest_run=$(find MLProject/mlruns/*/* -maxdepth 0 -type d | sort -r | head -n 1 | xargs -n 1 basename)
-        
-        if [ -z "$latest_run" ]; then
-          echo "Tidak ditemukan direktori run ID!"
-          exit 1
-        fi
+        run_id=$(find MLProject/mlruns/$exp_id/* -maxdepth 0 -type d | sort -r | head -n 1 | xargs -n 1 basename)
+        echo "Run ID: $run_id"
     
-        run_id=$(basename "$latest_run")
-        echo "run_id=$run_id"
+        echo "experiment_id=$exp_id" >> $GITHUB_OUTPUT
         echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
     - name: Install Python dependencies (again, inside shell)
@@ -72,7 +67,7 @@ jobs:
 
     - name: Build Docker Model
       run: |
-        MODEL_URI=MLProject/mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
+        MODEL_URI=MLProject/mlruns/${{ steps.get-run-id.outputs.experiment_id }}/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
         mlflow models build-docker --model-uri $MODEL_URI --name $IMAGE_NAME
     
