@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      MLFLOW_TRACKING_URI: file:mlruns
+      MLFLOW_TRACKING_URI: file:MLProject/mlruns
       MLFLOW_EXPERIMENT_NAME: mushroom-logreg-classifier
 
     steps:
@@ -48,7 +48,7 @@ jobs:
       id: get-run-id
       shell: bash
       run: |
-        run_dir=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d | grep -E 'mlruns/0/[a-f0-9-]+' | sort -r | head -n 1 || true)
+        run_dir=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r | head -n 1)
         if [ -z "$run_dir" ]; then
           echo "No valid run directory found!"
           exit 1
@@ -64,12 +64,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: mlruns/
+        path: MLProject/mlruns/
 
     - name: Build Docker Model
       run: |
         echo "Using run_id: ${{ steps.get-run-id.outputs.run_id }}"
-        MODEL_URI=mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
+        MODEL_URI=MLProject/mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
         echo "MODEL_URI = $MODEL_URI"
         mlflow models build-docker --model-uri "$MODEL_URI" --name "$IMAGE_NAME"
