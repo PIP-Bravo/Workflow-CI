@@ -46,8 +46,19 @@ jobs:
     - name: Get latest MLflow run_id
       id: get-run-id
       run: |
-        latest_run=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | sort -r | head -n 1 | xargs -n 1 basename)
-        echo "run_id=$latest_run" >> $GITHUB_OUTPUT
+        echo "Isi dari MLProject/mlruns/0:"
+        ls -la MLProject/mlruns/0 || echo "Direktori belum ada atau kosong"
+    
+        latest_run=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | sort -r | head -n 1)
+        
+        if [ -z "$latest_run" ]; then
+          echo "Tidak ditemukan direktori run ID!"
+          exit 1
+        fi
+    
+        run_id=$(basename "$latest_run")
+        echo "run_id=$run_id"
+        echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
     - name: Install Python dependencies (again, inside shell)
       run: |
