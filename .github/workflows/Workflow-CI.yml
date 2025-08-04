@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      MLFLOW_TRACKING_URI: file:MLProject/mlruns
+      MLFLOW_TRACKING_URI: file://$(pwd)/mlruns
       MLFLOW_EXPERIMENT_NAME: mushroom-logreg-classifier
 
     steps:
-    - name: Checkout repository
+    - name: Run actions/checkout@v3
       uses: actions/checkout@v3
 
     - name: Set up Python 3.12.7
@@ -22,49 +22,36 @@ jobs:
       with:
         python-version: 3.12.7
 
-    - name: Check environment
+    - name: Check Env
       run: |
         echo "Python version:"
         python --version
-        echo "Working directory:"
+        echo "Current directory:"
         pwd
+        echo "Files:"
         ls -la
-
-    - name: Install dependencies with conda
+    - name: Install dependencies
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        environment-file: MLProject/conda.yaml
+        environment-file: conda.yaml
         activate-environment: mlflow-env
         python-version: 3.12.7
         auto-activate-base: false
 
-    
-    - name: Run MLflow project
-      working-directory: MLProject
+    - name: Run mlflow project
       run: |
-        if [ -f MLProject/mlruns ]; then
-          echo "Detected MLProject/mlruns as a file. Removing it..."
-          rm MLProject/mlruns
-        fi
-        mkdir -p MLProject/mlruns
-        conda run -n mlflow-env mlflow run . --env-manager=conda
-
+        mlflow run MLProject --env-manager=conda
+        
     - name: Get latest MLflow run_id
       id: get-run-id
-      shell: bash
       run: |
-        run_dir=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r | head -n 1)
-        if [ -z "$run_dir" ]; then
-          echo "No valid run directory found!"
-          exit 1
-        fi
-        run_id=$(basename "$run_dir")
-        echo "Found run_id: $run_id"
-        echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+        latest_run=$(ls -td MLProject/mlruns/0/* | head -n 1 | xargs -n 1 basename)
+        echo "run_id=$latest_run" >> $GITHUB_OUTPUT
 
     - name: Install Python dependencies (again, inside shell)
-      run: pip install mlflow
+      run: |
+        pip install mlflow
 
     - name: Upload artifact ke GitHub repository
       uses: actions/upload-artifact@v4
@@ -74,12 +61,10 @@ jobs:
 
     - name: Build Docker Model
       run: |
-        echo "Using run_id: ${{ steps.get-run-id.outputs.run_id }}"
         MODEL_URI=MLProject/mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
-        echo "MODEL_URI = $MODEL_URI"
-        mlflow models build-docker --model-uri "$MODEL_URI" --name "$IMAGE_NAME"
-
+        mlflow models build-docker --model-uri $MODEL_URI --name $IMAGE_NAME
+    
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
@@ -90,7 +75,6 @@ jobs:
       run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest \
                    ${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:${{ github.run_number }}
-
     - name: Push Docker Image
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
