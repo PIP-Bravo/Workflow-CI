@@ -41,6 +41,7 @@ jobs:
 
     - name: Run mlflow project
       run: |
+        conda activate mlflow-env
         mlflow run MLProject --env-manager=conda
         
     - name: Get latest MLflow run_id
