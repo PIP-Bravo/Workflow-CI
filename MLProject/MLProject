@@ -1,0 +1,11 @@
+name: mushroom-logreg-classifier
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      max_iter: {type: int, default: 1000}
+      data_dir: {type: str, default: "mushrooms_preprocessing"}
+    command: >
+      python modeling.py --max_iter {max_iter} --data_dir {data_dir}
