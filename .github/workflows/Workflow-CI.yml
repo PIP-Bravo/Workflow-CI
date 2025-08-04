@@ -63,11 +63,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: MLProject/mlruns/
+        path: MLProject/artifacts/
 
     - name: Build Docker Model
       run: |
-        MODEL_URI=MLProject/mlruns/${{ steps.get-run-id.outputs.experiment_id }}/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
+        MODEL_URI=MLProject/mlartifacts/${{ steps.get-run-id.outputs.experiment_id }}/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
         mlflow models build-docker --model-uri $MODEL_URI --name $IMAGE_NAME
     
