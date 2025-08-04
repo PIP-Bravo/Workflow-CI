@@ -46,10 +46,16 @@ jobs:
 
     - name: Get latest MLflow run_id
       id: get-run-id
+      shell: bash
       run: |
-        run_dir=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | grep -E 'MLProject/mlruns/0/[a-f0-9-]+' | sort -r | head -n 1)
+        run_dir=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | grep -E 'MLProject/mlruns/0/[a-f0-9-]+' | sort -r | head -n 1 || true)
+        if [ -z "$run_dir" ]; then
+          echo "No valid run directory found!"
+          exit 1
+        fi
         run_id=$(basename "$run_dir")
-        echo "run_id=$run_id" >> $GITHUB_OUTPUT
+        echo "Found run_id: $run_id"
+        echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
 
     - name: Install Python dependencies (again, inside shell)
       run: pip install mlflow
