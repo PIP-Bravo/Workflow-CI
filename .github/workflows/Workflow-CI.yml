@@ -47,8 +47,9 @@ jobs:
     - name: Get latest MLflow run_id
       id: get-run-id
       run: |
-        latest_run=$(find MLProject/mlruns/0 -maxdepth 1 -type d -printf "%T@ %P\n" | sort -nr | awk 'NR==2 {print $2}')
-        echo "run_id=$latest_run" >> $GITHUB_OUTPUT
+        run_dir=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | grep -E 'MLProject/mlruns/0/[a-f0-9-]+' | sort -r | head -n 1)
+        run_id=$(basename "$run_dir")
+        echo "run_id=$run_id" >> $GITHUB_OUTPUT
 
     - name: Install Python dependencies (again, inside shell)
       run: pip install mlflow
