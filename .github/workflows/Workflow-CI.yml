@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  train-and-deploy:
+  run-and-model:
     runs-on: ubuntu-latest
 
     env:
@@ -14,7 +14,7 @@ jobs:
       MLFLOW_EXPERIMENT_NAME: mushroom-logreg-classifier
 
     steps:
-    - name: Run actions/checkout@v3
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python 3.12.7
@@ -22,47 +22,46 @@ jobs:
       with:
         python-version: 3.12.7
 
-    - name: Check Env
+    - name: Check environment
       run: |
         echo "Python version:"
         python --version
-        echo "Current directory:"
+        echo "Working directory:"
         pwd
-        echo "Files:"
         ls -la
 
-    - name: Install dependencies
+    - name: Install dependencies with conda
       uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
-        environment-file: conda.yaml
+        environment-file: MLProject/conda.yaml
         activate-environment: mlflow-env
         python-version: 3.12.7
         auto-activate-base: false
 
-    - name: Run mlflow project
+    - name: Run MLflow project
+      working-directory: MLProject
       run: |
         mlflow run . --env-manager=conda
 
     - name: Get latest MLflow run_id
       id: get-run-id
       run: |
-        latest_run=$(ls -td mlruns/0/* | head -n 1 | xargs -n 1 basename)
+        latest_run=$(ls -td MLProject/mlruns/0/* | head -n 1 | xargs -n 1 basename)
         echo "run_id=$latest_run" >> $GITHUB_OUTPUT
 
     - name: Install Python dependencies (again, inside shell)
-      run: |
-        pip install mlflow
+      run: pip install mlflow
 
     - name: Upload artifact ke GitHub repository
       uses: actions/upload-artifact@v4
       with:
         name: trained-model-artifacts
-        path: mlruns/
+        path: MLProject/mlruns/
 
     - name: Build Docker Model
       run: |
-        MODEL_URI=mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
+        MODEL_URI=MLProject/mlruns/0/${{ steps.get-run-id.outputs.run_id }}/artifacts/model
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/mushroom-logreg:latest
         mlflow models build-docker --model-uri $MODEL_URI --name $IMAGE_NAME
 
